@@ -17,7 +17,21 @@
                 </div>
                 <div class="hidden md:flex md:items-center md:space-x-4" id="menu">
                     <a href="{{ route('users') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200 {{ request()->routeIs('users') ? 'font-semibold' : '' }}">用户列表</a>
+                    <a href="{{ route('daily-stats.index') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200 {{ request()->routeIs('daily-stats.*') ? 'font-semibold' : '' }}">每日统计</a>
+                    <a href="{{ route('logins.index') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200 {{ request()->routeIs('logins.*') ? 'font-semibold' : '' }}">登录记录</a>
                     <a href="{{ route('chat') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200 {{ request()->routeIs('chat') ? 'font-semibold' : '' }}">聊天记录</a>
+                    <a href="{{ route('login-locations.index') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200 {{ request()->routeIs('login-locations.*') ? 'font-semibold' : '' }}">登录位置</a>
+
+                    @auth
+                        @if(auth()->user()->is_admin)
+                            <form method="POST" action="{{ route('logout') }}" class="inline">
+                                @csrf
+                                <button type="submit" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200">退出登录</button>
+                            </form>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="block mt-4 md:inline-block md:mt-0 text-white hover:text-gray-200">管理员登录</a>
+                    @endauth
                 </div>
             </div>
         </div>

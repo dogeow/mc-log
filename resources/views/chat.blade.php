@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="text-gray-700 break-words">
-                        {{ $message->content }}
+                        {{ auth()->check() && auth()->user()->is_admin ? $message->content : '*' }}
                     </div>
                 </div>
                 @endforeach
@@ -66,7 +66,7 @@
                                     <span>{{ $message->username }}</span>
                                 </div>
                             </td>
-                            <td class="border px-4 py-2 break-words">{{ $message->content }}</td>
+                            <td class="border px-4 py-2 break-words">{{ auth()->check() && auth()->user()->is_admin ? $message->content : '*' }}</td>
                             <td class="border px-4 py-2">{{ $message->sent_at->format('Y-m-d H:i:s') }}</td>
                         </tr>
                         @endforeach
