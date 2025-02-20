@@ -37,18 +37,8 @@ class DashboardController extends Controller
         }
         
         $users = $query->paginate(8);
-        
-        $dailyStats = ChatMessage::select(
-            DB::raw('DATE(created_at) as date'),
-            DB::raw('COUNT(*) as message_count'),
-            DB::raw('COUNT(DISTINCT user_id) as active_users')
-        )
-        ->groupBy('date')
-        ->orderBy('date', 'desc')
-        ->limit(30)
-        ->get();
 
-        return view('users', compact('users', 'dailyStats'));
+        return view('users', compact('users'));
     }
 
     public function chat()
