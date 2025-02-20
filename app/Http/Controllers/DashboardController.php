@@ -36,7 +36,7 @@ class DashboardController extends Controller
             $query->orderBy($sort, $direction);
         }
         
-        $users = $query->paginate(10);
+        $users = $query->paginate(8);
         
         $dailyStats = ChatMessage::select(
             DB::raw('DATE(created_at) as date'),
@@ -55,7 +55,7 @@ class DashboardController extends Controller
     {
         $chatMessages = ChatMessage::with('user')
             ->orderBy('sent_at', 'desc')
-            ->paginate(20);
+            ->paginate(8);
 
         return view('chat', compact('chatMessages'));
     }

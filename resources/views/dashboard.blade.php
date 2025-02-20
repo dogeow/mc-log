@@ -1,7 +1,7 @@
 @extends('layouts.gradient')
 
 @section('gradient-content')
-    <div class="container mx-auto">
+    <div class="container mx-auto p-2">
         <div class="flex justify-center space-x-4 items-center">
             @if(isset($serverStatus['info']['favicon']))
                 <img src="{{ str_replace("\n", "", $serverStatus['info']['favicon']) }}" style="width:64px;height:64px;">
