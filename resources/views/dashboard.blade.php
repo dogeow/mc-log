@@ -56,5 +56,11 @@
                 @endforeach
             </div>
         </div>
+    @else
+        <div style="border-bottom: 3rem solid;border-image: url(/images/minecraft_grass_block_texture.jpg) 1280 0 repeat;">
+            <div class="flex items-center justify-center">
+                <img src="https://minotar.net/body/minecraft/64.png" class="h-24 mx-1" alt="body">
+            </div>
+        </div>
     @endif
 @endsection
