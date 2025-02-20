@@ -11,9 +11,11 @@
     <nav class="bg-white shadow mb-8">
         <div class="container mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="/" class="text-xl font-bold">MC Log</a>
+                <a href="{{ route('home') }}" class="text-xl font-bold">MC Log</a>
                 <div class="space-x-4">
-                    <a href="/" class="text-gray-600 hover:text-gray-900">首页</a>
+                    <a href="{{ route('home') }}" class="text-gray-600 hover:text-gray-900 {{ request()->routeIs('home') ? 'text-gray-900 font-semibold' : '' }}">首页</a>
+                    <a href="{{ route('users') }}" class="text-gray-600 hover:text-gray-900 {{ request()->routeIs('users') ? 'text-gray-900 font-semibold' : '' }}">用户列表</a>
+                    <a href="{{ route('chat') }}" class="text-gray-600 hover:text-gray-900 {{ request()->routeIs('chat') ? 'text-gray-900 font-semibold' : '' }}">聊天记录</a>
                 </div>
             </div>
         </div>

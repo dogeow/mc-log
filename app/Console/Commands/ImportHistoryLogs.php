@@ -20,11 +20,30 @@ class ImportHistoryLogs extends Command
     private $currentLogin = [];
     private $currentFile;
     private $uuidCache = [];  // 添加这个属性来缓存UUID
+    private $logPath;
+
+    // 添加恶意用户匹配规则
+    private function isMaliciousUser($username)
+    {
+        return preg_match('/^Cornbread21\d{3,4}$/', $username);
+    }
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->logPath = config('minecraft.log_path');
+    }
 
     public function handle()
     {
         try {
-            $logFiles = collect(File::files('./logs'))
+            // 确保日志目录存在
+            if (!File::exists($this->logPath)) {
+                $this->error("日志目录不存在: {$this->logPath}");
+                return 1;
+            }
+
+            $logFiles = collect(File::files($this->logPath))
                 ->filter(function ($file) {
                     $filename = $file->getFilename();
                     // 只处理 latest.log 和符合日期格式的文件
@@ -116,6 +135,12 @@ class ImportHistoryLogs extends Command
                                 $username = $matches[2];
                                 $content = $matches[3];
 
+                                // 检查是否是恶意用户
+                                if ($this->isMaliciousUser($username)) {
+                                    $this->info("忽略恶意用户的聊天消息: {$username}");
+                                    continue;
+                                }
+
                                 $user = User::firstOrCreate(['username' => $username]);
 
                                 ChatMessage::create([
@@ -179,6 +204,12 @@ class ImportHistoryLogs extends Command
 
     private function handleLogin($username, $uuid, $timestamp)
     {
+        // 检查是否是恶意用户
+        if ($this->isMaliciousUser($username)) {
+            $this->info("忽略恶意用户: {$username}");
+            return;
+        }
+
         $user = User::firstOrCreate(['username' => $username, 'uuid' => $uuid]);
         
         // 如果用户已经在线，先处理之前的登录
@@ -202,7 +233,7 @@ class ImportHistoryLogs extends Command
 
         // 修改这里：使用完整的文件路径
         try {
-            $filePath = './logs/' . $this->currentFile;
+            $filePath = $this->logPath . '/' . $this->currentFile;
             if (!File::exists($filePath)) {
                 $this->warn("无法找到文件: {$filePath}");
                 return;
@@ -245,6 +276,11 @@ class ImportHistoryLogs extends Command
 
     private function handleLogout($username, $timestamp)
     {
+        // 检查是否是恶意用户
+        if ($this->isMaliciousUser($username)) {
+            return;
+        }
+
         if (!isset($this->currentLogin[$username])) {
             return;
         }
