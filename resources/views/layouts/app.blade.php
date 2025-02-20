@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-    <nav class="bg-white shadow mb-8">
+    <nav class="bg-white shadow">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row md:justify-between md:items-center py-3">
                 <div class="flex justify-between items-center">
