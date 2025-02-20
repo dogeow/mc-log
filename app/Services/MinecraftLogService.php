@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\File;
 class MinecraftLogService
 {
     private $uuidCache = [];
-    private $currentLogin = [];
 
     // 添加恶意用户匹配规则
     public function isMaliciousUser($username)
@@ -29,19 +28,12 @@ class MinecraftLogService
         }
 
         $user = User::firstOrCreate(['username' => $username, 'uuid' => $uuid]);
-        
-        // 如果用户已经在线，先处理之前的登录
-        if (isset($this->currentLogin[$username])) {
-            $this->handleLogout($username, $timestamp);
-        }
 
         // 检查是否在1分钟内重新登录
         $lastLogin = $user->logins()->latest()->first();
         if ($lastLogin && $lastLogin->created_at->diffInMinutes($timestamp) <= 1) {
             return null;
         }
-
-        $this->currentLogin[$username] = $timestamp;
 
         $login = Login::create([
             'user_id' => $user->id,
@@ -66,10 +58,6 @@ class MinecraftLogService
     {
         // 检查是否是恶意用户
         if ($this->isMaliciousUser($username)) {
-            return;
-        }
-
-        if (!isset($this->currentLogin[$username])) {
             return;
         }
 
@@ -105,8 +93,6 @@ class MinecraftLogService
             // 更新每日统计
             $this->updateDailyStats($user, $login, $duration);
         }
-
-        unset($this->currentLogin[$username]);
     }
 
     public function updateDailyStats($user, $login, $duration)
