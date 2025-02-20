@@ -25,7 +25,7 @@ class ImportHistoryLogs extends Command
     // 添加恶意用户匹配规则
     private function isMaliciousUser($username)
     {
-        return preg_match('/^Cornbread21\d{3,4}$/', $username);
+        return preg_match('/^Cornbread\d+$/', $username);
     }
 
     public function __construct()
@@ -37,6 +37,8 @@ class ImportHistoryLogs extends Command
     public function handle()
     {
         try {
+            $this->quiet = true;
+
             // 确保日志目录存在
             if (!File::exists($this->logPath)) {
                 $this->error("日志目录不存在: {$this->logPath}");
@@ -56,24 +58,25 @@ class ImportHistoryLogs extends Command
                     return $filename === 'latest.log' ? '9999-99-99' : $filename;
                 });
 
-            $this->info('找到 ' . $logFiles->count() . ' 个日志文件');
+            $this->log('找到 ' . $logFiles->count() . ' 个日志文件');
 
             // 清空现有数据
             if ($this->confirm('是否清空现有数据重新导入？')) {
-                $this->info('清空数据...');
+                $this->log('清空数据...');
                 
                 // 清空数据
+                User::truncate();
                 Login::truncate();
                 DailyStat::truncate();
                 ChatMessage::truncate();
                 User::query()->update(['total_online_time' => 0, 'is_online' => false]);
                 
-                $this->info('数据清空完成');
+                $this->log('数据清空完成');
             }
 
             foreach ($logFiles as $file) {
                 $this->currentFile = $file->getFilename();
-                $this->info('处理文件: ' . $this->currentFile);
+                $this->log('处理文件: ' . $this->currentFile);
                 
                 try {
                     $lines = file($file->getPathname());
@@ -121,7 +124,7 @@ class ImportHistoryLogs extends Command
                                 $user = User::where('username', $username)->first();
                                 if ($user && !$user->is_scientist) {
                                     $user->update(['is_scientist' => true]);
-                                    $this->info("将用户 {$username} 标记为科学家");
+                                    $this->log("将用户 {$username} 标记为科学家");
                                 }
                             } catch (\Exception $e) {
                                 $this->error("处理科学家标记出错: " . $e->getMessage());
@@ -137,7 +140,7 @@ class ImportHistoryLogs extends Command
 
                                 // 检查是否是恶意用户
                                 if ($this->isMaliciousUser($username)) {
-                                    $this->info("忽略恶意用户的聊天消息: {$username}");
+                                    $this->log("忽略恶意用户的聊天消息: {$username}");
                                     continue;
                                 }
 
@@ -151,7 +154,7 @@ class ImportHistoryLogs extends Command
                                     'created_at' => $timestamp
                                 ]);
 
-                                $this->info("记录用户 {$username} 的聊天消息：{$content}");
+                                $this->log("记录用户 {$username} 的聊天消息：{$content}");
                             } catch (\Exception $e) {
                                 $this->error("处理聊天消息出错: " . $e->getMessage());
                             }
@@ -170,9 +173,16 @@ class ImportHistoryLogs extends Command
                 $this->handleLogout($username, now());
             }
 
-            $this->info('历史日志导入完成');
+            $this->log('历史日志导入完成');
         } catch (\Exception $e) {
             $this->error("导入过程出错: " . $e->getMessage());
+        }
+    }
+
+    private function log($message)
+    {
+        if (!$this->quiet) {
+            $this->info($message);
         }
     }
 
@@ -206,7 +216,7 @@ class ImportHistoryLogs extends Command
     {
         // 检查是否是恶意用户
         if ($this->isMaliciousUser($username)) {
-            $this->info("忽略恶意用户: {$username}");
+            $this->log("忽略恶意用户: {$username}");
             return;
         }
 
@@ -271,7 +281,7 @@ class ImportHistoryLogs extends Command
             'last_login_at' => $timestamp
         ]);
 
-        $this->info("用户 {$username} 在 {$timestamp} 登录");
+        $this->log("用户 {$username} 在 {$timestamp} 登录");
     }
 
     private function handleLogout($username, $timestamp)
@@ -299,8 +309,7 @@ class ImportHistoryLogs extends Command
             $duration = $login->login_at->diffInSeconds($timestamp);
             
             // 确保时长为正数且合理
-            if ($duration <= 0 || $duration > 86400) { // 86400 = 24小时
-                $this->warn("警告: {$username} 的在线时长异常: {$duration} 秒，跳过处理");
+            if ($duration <= 0) {
                 return;
             }
 
@@ -319,7 +328,7 @@ class ImportHistoryLogs extends Command
             // 更新每日统计
             $this->updateDailyStats($user, $login, $duration);
 
-            $this->info("用户 {$username} 在 {$timestamp} 登出，本次在线时长: " . gmdate('H:i:s', $duration));
+            $this->log("用户 {$username} 在 {$timestamp} 登出，本次在线时长: " . gmdate('H:i:s', $duration));
         }
 
         unset($this->currentLogin[$username]);

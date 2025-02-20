@@ -5,7 +5,30 @@
     <h1 class="text-2xl font-bold mb-4">聊天记录</h1>
     
     <section>
-        <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
+        <!-- 移动端卡片视图 -->
+        <div class="md:hidden space-y-4">
+            @foreach($chatMessages as $message)
+            <div class="bg-white rounded-lg shadow p-4">
+                <div class="flex items-center space-x-3 mb-2">
+                    <img src="https://crafthead.net/avatar/{{ $message->username }}" alt="{{ $message->username }}" class="w-10 h-10 rounded-sm">
+                    <div>
+                        <div class="font-semibold">{{ $message->username }}</div>
+                        <div class="text-sm text-gray-500">{{ $message->sent_at->format('Y-m-d H:i:s') }}</div>
+                    </div>
+                </div>
+                <div class="text-gray-700 break-words">
+                    {{ $message->content }}
+                </div>
+            </div>
+            @endforeach
+            
+            <div class="mt-4">
+                {{ $chatMessages->appends(request()->query())->links() }}
+            </div>
+        </div>
+
+        <!-- 桌面端表格视图 -->
+        <div class="hidden md:block bg-white p-4 rounded-lg shadow overflow-x-auto">
             <table class="min-w-full">
                 <thead>
                     <tr>
@@ -24,7 +47,7 @@
                                 <span>{{ $message->username }}</span>
                             </div>
                         </td>
-                        <td class="border px-4 py-2">{{ $message->content }}</td>
+                        <td class="border px-4 py-2 break-words">{{ $message->content }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -5,7 +5,52 @@
     <h1 class="text-2xl font-bold mb-4">用户列表</h1>
     
     <section>
-        <div class="bg-white p-4 rounded-lg shadow overflow-x-auto">
+        <!-- 移动端卡片视图 -->
+        <div class="md:hidden space-y-4">
+            @foreach($users as $user)
+            <div class="bg-white rounded-lg shadow p-4 {{ $user->is_online ? 'border-l-4 border-green-500' : '' }}">
+                <div class="flex items-center space-x-3 mb-3">
+                    <img src="https://crafthead.net/avatar/{{ $user->username }}" alt="{{ $user->username }}" class="w-10 h-10 rounded-sm">
+                    <div>
+                        <div class="font-semibold">{{ $user->username }}</div>
+                        <span class="px-2 py-1 rounded text-sm {{ $user->is_online ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                            {{$user->is_online ? '在线' : '离线'}}
+                        </span>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm text-gray-600">
+                    <div class="flex justify-between">
+                        <span>离线时间：</span>
+                        <span>{{ $user->last_logout_at }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>所在世界：</span>
+                        <span>
+                            @if($lastLocation = $user->loginLocations->last())
+                                {{ $lastLocation->world }}
+                            @endif
+                        </span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>总在线时长：</span>
+                        <span>{{ gmdate('H:i:s', $user->total_online_time) }}</span>
+                    </div>
+                    @if($user->is_scientist)
+                    <div class="flex justify-end">
+                        <span class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">科学家</span>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endforeach
+            
+            <div class="mt-4">
+                {{ $users->appends(request()->query())->links() }}
+            </div>
+        </div>
+
+        <!-- 桌面端表格视图 -->
+        <div class="hidden md:block bg-white p-4 rounded-lg shadow overflow-x-auto">
             <table class="min-w-full">
                 <thead>
                     <tr>
