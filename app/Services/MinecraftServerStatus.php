@@ -7,17 +7,20 @@ use App\Services\Minecraft\MinecraftQuery;
 
 class MinecraftServerStatus
 {
-    const MQ_SERVER_ADDR = '8.210.157.33';
-    const MQ_SERVER_PORT = 25565;
-    const MQ_SERVER_QUERY_PORT = 25565;
-    const MQ_TIMEOUT = 1;
-
     public function getServerStatus()
     {
         $timer = microtime(true);
         
-        $info = $this->createPing(self::MQ_SERVER_ADDR, self::MQ_SERVER_PORT, self::MQ_TIMEOUT);
-        list($queryInfo, $players) = $this->createQuery(self::MQ_SERVER_ADDR, self::MQ_SERVER_QUERY_PORT);
+        $info = $this->createPing(
+            config('minecraft.server.ip'),
+            config('minecraft.server.port'),
+            config('minecraft.server.timeout')
+        );
+        
+        list($queryInfo, $players) = $this->createQuery(
+            config('minecraft.server.ip'),
+            config('minecraft.server.query_port')
+        );
         
         $timer = number_format(microtime(true) - $timer, 4, '.', '');
 

@@ -10,4 +10,10 @@ return [
     |
     */
     'log_path' => env('MINECRAFT_LOG_PATH', storage_path('logs/minecraft')),
+    'server' => [
+        'ip' => env('MINECRAFT_SERVER_IP', '127.0.0.1'),
+        'port' => env('MINECRAFT_SERVER_PORT', 25565),
+        'query_port' => env('MINECRAFT_SERVER_QUERY_PORT', 25565),
+        'timeout' => 1,
+    ],
 ]; 
