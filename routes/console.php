@@ -8,5 +8,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('app:test', function () {
-    Cache::put('minecraft_log_last_line', 26, now()->addDays(1));
+    print_r(Cache::get('minecraft_log_last_line'));
 });
