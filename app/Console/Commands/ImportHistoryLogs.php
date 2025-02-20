@@ -69,7 +69,6 @@ class ImportHistoryLogs extends Command
                 Login::truncate();
                 DailyStat::truncate();
                 ChatMessage::truncate();
-                User::query()->update(['total_online_time' => 0, 'is_online' => false]);
                 
                 $this->log('数据清空完成');
             }
