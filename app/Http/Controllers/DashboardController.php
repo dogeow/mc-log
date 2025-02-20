@@ -7,12 +7,16 @@ use App\Models\User;
 use App\Models\ChatMessage;
 use App\Models\LoginLocation;
 use Illuminate\Support\Facades\DB;
+use App\Services\MinecraftServerStatus;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('dashboard');
+        $mcStatus = new MinecraftServerStatus();
+        $serverStatus = $mcStatus->getServerStatus();
+        
+        return view('dashboard', compact('serverStatus'));
     }
 
     public function users(Request $request)

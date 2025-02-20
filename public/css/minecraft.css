@@ -1,0 +1,51 @@
+/* Minecraft 按钮样式 */
+.minecraft-btn {
+    background-image: url('/images/minecraft/button.png');
+    background-size: cover;
+    border: 2px solid #000;
+    padding: 6px 12px;
+    position: relative;
+    text-shadow: 2px 2px #000;
+    image-rendering: pixelated;
+}
+
+.minecraft-btn:hover {
+    background-image: url('/images/minecraft/button_hover.png');
+}
+
+.minecraft-btn:active {
+    top: 1px;
+}
+
+/* Minecraft 面板样式 */
+.minecraft-panel {
+    background-image: url('/images/minecraft/dirt.png');
+    background-repeat: repeat;
+    border: 2px solid #000;
+    image-rendering: pixelated;
+}
+
+/* Minecraft 物品框样式 */
+.minecraft-item {
+    background-image: url('/images/minecraft/item_frame.png');
+    background-size: cover;
+    padding: 8px;
+    image-rendering: pixelated;
+}
+
+/* Minecraft 标题样式 */
+.minecraft-title {
+    text-shadow: 2px 2px #000;
+    font-family: 'Minecraft', monospace;
+}
+
+/* Minecraft 动画效果 */
+@keyframes hover {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+    100% { transform: translateY(0); }
+}
+
+.hover-effect:hover {
+    animation: hover 1s infinite;
+} 
