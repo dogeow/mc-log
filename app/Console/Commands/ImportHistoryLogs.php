@@ -37,7 +37,7 @@ class ImportHistoryLogs extends Command
     public function handle()
     {
         try {
-            $this->quiet = true;
+            $this->quiet = false;
 
             // 确保日志目录存在
             if (!File::exists($this->logPath)) {
