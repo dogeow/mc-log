@@ -33,12 +33,6 @@
         @yield('content')
     </main>
 
-    <footer class="bg-white shadow mt-8 py-4">
-        <div class="container mx-auto px-4 text-center text-gray-600">
-            &copy; {{ date('Y') }} MC Log. All rights reserved.
-        </div>
-    </footer>
-
     <script>
         document.getElementById('menuBtn').addEventListener('click', function() {
             const menu = document.getElementById('menu');
