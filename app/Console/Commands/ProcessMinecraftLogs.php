@@ -89,5 +89,7 @@ class ProcessMinecraftLogs extends Command
 
         // 保存最后处理的行数
         Cache::put('minecraft_log_last_line', $totalLines, now()->addDays(1));
+
+        $this->info('处理到' . $totalLines . '行');
     }
 }
