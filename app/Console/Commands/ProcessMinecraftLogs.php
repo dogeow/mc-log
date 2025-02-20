@@ -54,7 +54,7 @@ class ProcessMinecraftLogs extends Command
             }
             
             // 处理登录信息
-            if (preg_match('/\[.*?\] \[Server thread\/INFO\]: (.*?) joined the game/', $line, $matches)) {
+            if (preg_match('/\[.*?\] \[Craft Scheduler Thread.*?AuthMe\/INFO\]: \[AuthMe\] (.*?) logged in/', $line, $matches)) {
                 $username = $matches[1];
                 $uuid = $this->logService->findUuidFromLines($lines, $username);
                 $timestamp = $this->logService->parseTimestamp($line, 'latest.log');

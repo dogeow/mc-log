@@ -95,7 +95,7 @@ class ImportHistoryLogs extends Command
                         }
 
                         // 处理登录信息
-                        if (preg_match('/^\[(.*?)\] \[Server thread\/INFO\]: (.*?) joined the game/', $line, $matches)) {
+                        if (preg_match('/^\[(.*?)\] \[Craft Scheduler Thread.*?AuthMe\/INFO\]: \[AuthMe\] (.*?) logged in/', $line, $matches)) {
                             try {
                                 $timestamp = $this->parseTimestamp($matches[1]);
                                 $username = $matches[2];
