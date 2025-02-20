@@ -3,7 +3,34 @@
 @section('gradient-content')
 <div class="container mx-auto p-4">
     <div class="bg-white/10 backdrop-blur rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-bold mb-4">用户列表</h2>
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold">用户列表</h2>
+            <form action="{{ route('users') }}" method="GET" class="flex space-x-2">
+                <input type="text" 
+                       name="search" 
+                       value="{{ request('search') }}" 
+                       placeholder="搜索用户名..." 
+                       class="px-4 py-2 rounded-lg border border-gray-300 text-black focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <button type="submit" 
+                        class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    搜索
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('users') }}" 
+                       class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                        清除
+                    </a>
+                @endif
+                <!-- 保持现有的排序参数 -->
+                @if(request('sort'))
+                    <input type="hidden" name="sort" value="{{ request('sort') }}">
+                @endif
+                @if(request('direction'))
+                    <input type="hidden" name="direction" value="{{ request('direction') }}">
+                @endif
+            </form>
+        </div>
+
         <section class="text-black">
             <!-- 移动端卡片视图 -->
             <div class="md:hidden space-y-4">

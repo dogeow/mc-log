@@ -23,6 +23,11 @@ class DashboardController extends Controller
     {
         $query = User::with('loginLocations');
 
+        // 添加搜索功能
+        if ($request->has('search')) {
+            $query->where('username', 'like', '%' . $request->search . '%');
+        }
+
         // 默认排序：在线用户优先，然后按最后登录时间倒序
         $query->orderBy('is_online', 'desc')
               ->orderBy('last_login_at', 'desc');
@@ -41,11 +46,19 @@ class DashboardController extends Controller
         return view('users', compact('users'));
     }
 
-    public function chat()
+    public function chat(Request $request)
     {
-        $chatMessages = ChatMessage::with('user')
-            ->orderBy('sent_at', 'desc')
-            ->paginate(8);
+        $query = ChatMessage::with('user')->orderBy('sent_at', 'desc');
+
+        // 添加搜索功能
+        if ($request->has('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('username', 'like', '%' . $request->search . '%')
+                  ->orWhere('content', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        $chatMessages = $query->paginate(8);
 
         return view('chat', compact('chatMessages'));
     }
